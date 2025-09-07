@@ -1,84 +1,63 @@
-package com.proyectotienda.ProyectoTienda.controller;
+package com.proyectotienda.ProyectoTienda.model;
 
-import com.proyectotienda.ProyectoTienda.model.Cliente;
-import com.proyectotienda.ProyectoTienda.repository.ClienteRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.springframework.dao.DataIntegrityViolationException;
+import jakarta.persistence.*;
 
-import jakarta.validation.Valid;
-import java.util.List;
+@Entity
+@Table(name = "clientes")
+public class Cliente {
 
-@Controller
-@RequestMapping("/clientes")
-public class ClienteController {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    @Autowired
-    private ClienteRepository clienteRepository;
+    @Column(name = "nombre", nullable = false, length = 100)
+    private String nombre;
 
-    // Mostrar lista de clientes
-    @GetMapping
-    public String listarClientes(Model model) {
-        List<Cliente> clientes = clienteRepository.findAll();
-        model.addAttribute("clientes", clientes);
-        return "clientes";
+    @Column(name = "correo", nullable = false, unique = true, length = 150)
+    private String correo;
+
+    @Column(name = "telefono", nullable = false, length = 20)
+    private String telefono;
+
+    // Constructores
+    public Cliente() {}
+
+    public Cliente(String nombre, String correo, String telefono) {
+        this.nombre = nombre;
+        this.correo = correo;
+        this.telefono = telefono;
     }
 
-    // Mostrar formulario para registrar nuevo cliente
-    @GetMapping("/nuevo")
-    public String mostrarFormularioRegistro(Model model) {
-        model.addAttribute("cliente", new Cliente());
-        return "registro_cliente";
+    // Getters y Setters
+    public Long getId() {
+        return id;
     }
 
-    // Procesar el registro del nuevo cliente con validación
-    @PostMapping("/guardar")
-    public String guardarCliente(@Valid @ModelAttribute("cliente") Cliente cliente,
-                                 BindingResult bindingResult,
-                                 Model model,
-                                 RedirectAttributes redirectAttributes) {
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-        // Si hay errores de validación, regresar al formulario
-        if (bindingResult.hasErrors()) {
-            model.addAttribute("cliente", cliente);
-            return "registro_cliente";
-        }
+    public String getNombre() {
+        return nombre;
+    }
 
-        try {
-            // Verificar si ya existe un cliente con el mismo correo
-            if (clienteRepository.findByCorreo(cliente.getCorreo()).isPresent()) {
-                bindingResult.rejectValue("correo", "correo.duplicado",
-                        "Ya existe un cliente con ese correo electrónico");
-                model.addAttribute("cliente", cliente);
-                return "registro_cliente";
-            }
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
 
-            // Guardar el cliente en la base de datos
-            clienteRepository.save(cliente);
+    public String getCorreo() {
+        return correo;
+    }
 
-            // Mensaje de éxito
-            redirectAttributes.addFlashAttribute("mensaje", "Cliente registrado exitosamente");
-            redirectAttributes.addFlashAttribute("tipo", "success");
+    public void setCorreo(String correo) {
+        this.correo = correo;
+    }
 
-        } catch (DataIntegrityViolationException e) {
-            // Error de integridad (correo duplicado)
-            redirectAttributes.addFlashAttribute("mensaje", "Ya existe un cliente con ese correo electrónico");
-            redirectAttributes.addFlashAttribute("tipo", "error");
+    public String getTelefono() {
+        return telefono;
+    }
 
-        } catch (Exception e) {
-            // Error general
-            redirectAttributes.addFlashAttribute("mensaje", "Error al registrar el cliente: " + e.getMessage());
-            redirectAttributes.addFlashAttribute("tipo", "error");
-        }
-
-        // Redirigir a la lista de clientes
-        return "redirect:/clientes";
+    public void setTelefono(String telefono) {
+        this.telefono = telefono;
     }
 }

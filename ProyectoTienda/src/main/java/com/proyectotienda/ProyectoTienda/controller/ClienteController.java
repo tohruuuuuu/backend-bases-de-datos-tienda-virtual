@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.dao.DataIntegrityViolationException;
 
-import jakarta.validation.Valid;
 import java.util.List;
 
 @Controller
@@ -38,28 +37,14 @@ public class ClienteController {
         return "registro_cliente";
     }
 
-    // Procesar el registro del nuevo cliente con validación
+    // Procesar el registro del nuevo cliente (versión simplificada sin validación de correo duplicado)
     @PostMapping("/guardar")
-    public String guardarCliente(@Valid @ModelAttribute("cliente") Cliente cliente,
+    public String guardarCliente(@ModelAttribute("cliente") Cliente cliente,
                                  BindingResult bindingResult,
                                  Model model,
                                  RedirectAttributes redirectAttributes) {
 
-        // Si hay errores de validación, regresar al formulario
-        if (bindingResult.hasErrors()) {
-            model.addAttribute("cliente", cliente);
-            return "registro_cliente";
-        }
-
         try {
-            // Verificar si ya existe un cliente con el mismo correo
-            if (clienteRepository.findByCorreo(cliente.getCorreo()).isPresent()) {
-                bindingResult.rejectValue("correo", "correo.duplicado",
-                        "Ya existe un cliente con ese correo electrónico");
-                model.addAttribute("cliente", cliente);
-                return "registro_cliente";
-            }
-
             // Guardar el cliente en la base de datos
             clienteRepository.save(cliente);
 
@@ -68,14 +53,16 @@ public class ClienteController {
             redirectAttributes.addFlashAttribute("tipo", "success");
 
         } catch (DataIntegrityViolationException e) {
-            // Error de integridad (correo duplicado)
-            redirectAttributes.addFlashAttribute("mensaje", "Ya existe un cliente con ese correo electrónico");
+            // Error de integridad (correo duplicado u otra violación de constraint)
+            redirectAttributes.addFlashAttribute("mensaje", "Error: Ya existe un cliente con ese correo electrónico");
             redirectAttributes.addFlashAttribute("tipo", "error");
+            return "redirect:/clientes/nuevo";
 
         } catch (Exception e) {
             // Error general
             redirectAttributes.addFlashAttribute("mensaje", "Error al registrar el cliente: " + e.getMessage());
             redirectAttributes.addFlashAttribute("tipo", "error");
+            return "redirect:/clientes/nuevo";
         }
 
         // Redirigir a la lista de clientes
