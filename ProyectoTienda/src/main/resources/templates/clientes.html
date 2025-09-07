@@ -1,0 +1,54 @@
+<!DOCTYPE html> 
+
+
+
+<!-- thymeleaf permite combinar java con html -->
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>clientes</title>
+
+
+</head>
+<body>
+
+    <h1>registro de clientes</h1>
+
+    <table border="1">
+
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>NOMBRE</th>
+                    <th>CORREO</th>
+                    <th>TELEFONO</th>
+                    <th>ACCIONES</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr th:each="cliente : ${clientes}">
+                    <td th:text="${cliente.ID}"></td>
+                    <td th:text="${cliente.NOMBRE}"></td>
+                    <td th:text="${cliente.CORREO}"></td>
+                    <td th:text="${cliente.TELEFONO}"></td>
+                    <td th:text="${cliente.ACCIONES}">
+                        <a href="">editar</a>
+                        <a href="">eliminar</a>
+<!-- th:each sirve para iterar la lista de clientes -->
+                    </td>
+
+                </tr>
+            </tbody>
+
+
+
+    </table>
+
+<a href="">registrar cliente</a>
+
+
+
+
+</body>
+</html>
