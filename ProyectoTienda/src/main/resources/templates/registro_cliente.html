@@ -1,74 +1,280 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>registro de clientes</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrar Cliente - Tienda 2025</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
 
-    <div class="container">
-        <div class="header">
-            <h1>Registrar Cliente</h1>
-            <p>Completa el formulario para agregar un nuevo cliente</p>
-        </div>
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
 
-        <div class="form-container">
-            <form th:action="@{/clientes/guardar}"
-                  th:object="${cliente}"
-                  method="post">
-                
-                <div class="form-group">
-                    <label for="nombre">Nombre Completo *</label>
-                    <div class="form-icon name">
-                        <input type="text" 
-                               id="nombre" 
-                               th:field="*{nombre}" 
-                               required 
-                               placeholder="Ingresa el nombre completo"
-                               maxlength="100">
-                    </div>
-                </div>
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
 
-                <div class="form-group">
-                    <label for="correo">Correo Electrónico *</label>
-                    <div class="form-icon email">
-                        <input type="email" 
-                               id="correo" 
-                               th:field="*{correo}" 
-                               required 
-                               placeholder="ejemplo@correo.com"
-                               maxlength="150">
-                    </div>
-                </div>
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
 
-                <div class="form-group">
-                    <label for="telefono">Teléfono *</label>
-                    <div class="form-icon phone">
-                        <input type="tel" 
-                               id="telefono" 
-                               th:field="*{telefono}" 
-                               required 
-                               placeholder="123-456-7890"
-                               maxlength="15">
-                    </div>
-                </div>
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
 
-                <div class="btn-container">
-                    <button type="submit" class="btn btn-primary">
-                        Registrar Cliente
-                    </button>
-                    <a href="/clientes" class="btn btn-secondary">
-                        Cancelar
-                    </a>
-                </div>
-            </form>
-        </div>
-    </div>
+        .form-container {
+            padding: 40px;
+        }
 
+        .form-group {
+            margin-bottom: 25px;
+        }
 
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+            font-size: 1.1em;
+        }
 
-    
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"] {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        input[type="tel"]:focus {
+            border-color: #667eea;
+            outline: none;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .btn-container {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 15px 25px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            text-align: center;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(108, 117, 125, 0.4);
+        }
+
+        .form-icon {
+            position: relative;
+        }
+
+        .form-icon::before {
+            content: '';
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 20px;
+            height: 20px;
+            background-size: contain;
+            opacity: 0.6;
+        }
+
+        .form-icon.name::before {
+            content: '👤';
+        }
+
+        .form-icon.email::before {
+            content: '📧';
+        }
+
+        .form-icon.phone::before {
+            content: '📱';
+        }
+
+        .form-icon input {
+            padding-left: 50px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                border-radius: 10px;
+            }
+
+            .header {
+                padding: 20px;
+            }
+
+            .header h1 {
+                font-size: 2em;
+            }
+
+            .form-container {
+                padding: 20px;
+            }
+
+            .btn-container {
+                flex-direction: column;
+            }
+        }
+
+        /* Animación de entrada */
+        .container {
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
 </head>
 <body>
+<div class="container">
+    <div class="header">
+        <h1>Registrar Cliente</h1>
+        <p>Completa el formulario para agregar un nuevo cliente</p>
+    </div>
 
+    <div class="form-container">
+        <form th:action="@{/clientes/guardar}" th:object="${cliente}" method="post">
+
+            <div class="form-group">
+                <label for="nombre">Nombre Completo *</label>
+                <div class="form-icon name">
+                    <input type="text"
+                           id="nombre"
+                           th:field="*{nombre}"
+                           required
+                           placeholder="Ingresa el nombre completo"
+                           maxlength="100">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="correo">Correo Electrónico *</label>
+                <div class="form-icon email">
+                    <input type="email"
+                           id="correo"
+                           th:field="*{correo}"
+                           required
+                           placeholder="ejemplo@correo.com"
+                           maxlength="150">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="telefono">Teléfono *</label>
+                <div class="form-icon phone">
+                    <input type="tel"
+                           id="telefono"
+                           th:field="*{telefono}"
+                           required
+                           placeholder="123-456-7890"
+                           maxlength="15">
+                </div>
+            </div>
+
+            <div class="btn-container">
+                <button type="submit" class="btn btn-primary">
+                    Registrar Cliente
+                </button>
+                <a href="/clientes" class="btn btn-secondary">
+                    Cancelar
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    // Validacion en tiempo real
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.querySelector('form');
+        const inputs = form.querySelectorAll('input[required]');
+
+        inputs.forEach(input => {
+            input.addEventListener('blur', function() {
+                if (this.value.trim() === '') {
+                    this.style.borderColor = '#dc3545';
+                } else {
+                    this.style.borderColor = '#28a745';
+                }
+            });
+        });
+
+       //Animacion del boton de envío
+        const submitBtn = form.querySelector('.btn-primary');
+        form.addEventListener('submit', function(e) {
+            submitBtn.textContent = 'Registrando...';
+            submitBtn.style.opacity = '0.7';
+        });
+    });
+</script>
 </body>
 </html>
