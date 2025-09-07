@@ -24,7 +24,7 @@ public class ClienteController {
     @Autowired
     private ClienteRepository clienteRepository;
 
-    //mostrat lista de clientes
+    //mostrar lista de clientes
 
     //anotacion
     @GetMapping
@@ -35,7 +35,7 @@ public class ClienteController {
 
         //agregar elementos a la lista
 
-        model.addAttribute("clientes",clientes);
+        model.addAttribute("clientes",clienteRepository);
 
         return "clientes";
 
