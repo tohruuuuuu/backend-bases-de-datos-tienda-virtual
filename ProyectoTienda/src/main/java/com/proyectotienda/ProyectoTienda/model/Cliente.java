@@ -9,7 +9,7 @@ import jakarta.persistence.Id;
 
 //anotacion que indica que clase debe ser gestionada por JPA
 @Entity
-public class cliente {
+public class Cliente {
 
     //variables del cliente
 
