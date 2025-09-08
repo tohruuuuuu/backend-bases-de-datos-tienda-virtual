@@ -1,63 +1,51 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>holaaaa</title>
+    <title>Editar Cliente</title>
 </head>
 <body>
+<h1>EDITAR CLIENTE</h1>
+<p>Cliente ID: <strong th:text="${cliente.id}">ID</strong></p>
 
-<H1>EDITAR CLIENTE</H1>
+<form th:action="@{/clientes/guardar}" method="post">
+    <!-- Campo oculto para el ID - MUY IMPORTANTE -->
+    <input type="hidden" name="id" th:value="${cliente.id}">
 
-<div class="form-container">
-    <form th:action="@{/clientes/guardar}" th:object="${cliente}" method="post">
+    <div>
+        <label for="nombre">Nombre Completo</label>
+        <input type="text"
+               id="nombre"
+               name="nombre"
+               th:value="${cliente.nombre}"
+               required
+               maxlength="100">
+    </div>
 
-        <div class="form-group">
-            <label for="nombre">Nombre Completo *</label>
-            <div class="form-icon name">
-                <input type="text"
-                       id="nombre"
-                       th:field="*{nombre}"
-                       required
-                       placeholder="Ingresa el nombre completo"
-                       maxlength="100">
-            </div>
-        </div>
+    <div>
+        <label for="correo">Correo Electrónico</label>
+        <input type="email"
+               id="correo"
+               name="correo"
+               th:value="${cliente.correo}"
+               required
+               maxlength="150">
+    </div>
 
-        <div class="form-group">
-            <label for="correo">Correo Electrónico *</label>
-            <div class="form-icon email">
-                <input type="email"
-                       id="correo"
-                       th:field="*{correo}"
-                       required
-                       placeholder="ejemplo@correo.com"
-                       maxlength="150">
-            </div>
-        </div>
+    <div>
+        <label for="telefono">Teléfono</label>
+        <input type="tel"
+               id="telefono"
+               name="telefono"
+               th:value="${cliente.telefono}"
+               required
+               maxlength="15">
+    </div>
 
-        <div class="form-group">
-            <label for="telefono">Teléfono *</label>
-            <div class="form-icon phone">
-                <input type="tel"
-                       id="telefono"
-                       th:field="*{telefono}"
-                       required
-                       placeholder="123-456-7890"
-                       maxlength="15">
-            </div>
-        </div>
-
-        <div class="btn-container">
-            <button type="submit" class="btn btn-primary">
-                Registrar Cliente
-            </button>
-            <a href="/clientes" class="btn btn-secondary">
-                Cancelar
-            </a>
-        </div>
-    </form>
-</div>
-</div>
-
+    <div>
+        <button type="submit">Actualizar Cliente</button>
+        <a href="/clientes">Cancelar</a>
+    </div>
+</form>
 </body>
 </html>

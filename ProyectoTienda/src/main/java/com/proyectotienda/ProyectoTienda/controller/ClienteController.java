@@ -6,10 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.dao.DataIntegrityViolationException;
 
@@ -68,4 +65,70 @@ public class ClienteController {
         // Redirigir a la lista de clientes
         return "redirect:/clientes";
     }
+
+    //funcion ruta editar campos
+// Agregar estos métodos a tu ClienteController.java existente
+
+    // quiero ostrar el formulario para editar cliente existente
+@GetMapping("/editar/{id}")
+public String mostrarFormularioEdicion(@PathVariable("id") Long id, Model model, RedirectAttributes redirectAttributes) {
+    try {
+        Optional<Cliente> clienteOptional = clienteRepository.findById(id);
+
+        if (clienteOptional.isPresent()) {
+            model.addAttribute("cliente", clienteOptional.get());
+            return "editar_cliente";
+        } else {
+            redirectAttributes.addFlashAttribute("mensaje", "Cliente no encontrado");
+            redirectAttributes.addFlashAttribute("tipo", "error");
+            return "redirect:/clientes";
+        }
+    } catch (Exception e) {
+        redirectAttributes.addFlashAttribute("mensaje", "Error al cargar el cliente: " + e.getMessage());
+        redirectAttributes.addFlashAttribute("tipo", "error");
+        return "redirect:/clientes";
+    }
+}
+
+// Actualizar el método guardar existente para manejar tanto nuevo como edición
+@PostMapping("/guardar")
+public String guardarCliente(@ModelAttribute("cliente") Cliente cliente,
+                             BindingResult bindingResult,
+                             Model model,
+                             RedirectAttributes redirectAttributes) {
+
+    try {
+        // Guardar funciona tanto para nuevo (id=null) como para actualización (id!=null)
+        clienteRepository.save(cliente);
+
+        // Mensaje según si es nuevo o actualización
+        String mensaje = (cliente.getId() == null) ? "Cliente registrado exitosamente" : "Cliente actualizado exitosamente";
+        redirectAttributes.addFlashAttribute("mensaje", mensaje);
+        redirectAttributes.addFlashAttribute("tipo", "success");
+
+    } catch (DataIntegrityViolationException e) {
+        redirectAttributes.addFlashAttribute("mensaje", "Error: Ya existe un cliente con ese correo electrónico");
+        redirectAttributes.addFlashAttribute("tipo", "error");
+
+        if (cliente.getId() == null) {
+            return "redirect:/clientes/nuevo";
+        } else {
+            return "redirect:/clientes/editar/" + cliente.getId();
+        }
+
+    } catch (Exception e) {
+        String tipoOperacion = (cliente.getId() == null) ? "registrar" : "actualizar";
+        redirectAttributes.addFlashAttribute("mensaje", "Error al " + tipoOperacion + " el cliente: " + e.getMessage());
+        redirectAttributes.addFlashAttribute("tipo", "error");
+
+        if (cliente.getId() == null) {
+            return "redirect:/clientes/nuevo";
+        } else {
+            return "redirect:/clientes/editar/" + cliente.getId();
+        }
+    }
+
+    return "redirect:/clientes";
+    }
+
 }
