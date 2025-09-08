@@ -1,88 +1,181 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Clientes</title>
+    <title>Clientes - Tienda 2025</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 20px;
+            background-color: #f8f9fa;
         }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .alert {
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+
+        .alert-success {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+
+        .alert-error {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+
         table {
             width: 100%;
             border-collapse: collapse;
             margin: 20px 0;
         }
+
         th, td {
             border: 1px solid #ddd;
-            padding: 8px;
+            padding: 12px;
             text-align: left;
         }
+
         th {
-            background-color: #f2f2f2;
+            background-color: #f8f9fa;
+            font-weight: 600;
+            color: #333;
         }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+
         .btn {
-            padding: 5px 10px;
+            padding: 8px 16px;
             margin: 2px;
             text-decoration: none;
-            border-radius: 3px;
+            border-radius: 5px;
+            font-size: 14px;
+            display: inline-block;
+            transition: all 0.3s ease;
         }
+
         .btn-edit {
             background-color: #007bff;
             color: white;
         }
+
+        .btn-edit:hover {
+            background-color: #0056b3;
+        }
+
         .btn-delete {
             background-color: #dc3545;
             color: white;
         }
+
+        .btn-delete:hover {
+            background-color: #c82333;
+        }
+
         .btn-add {
             background-color: #28a745;
             color: white;
-            padding: 10px 20px;
+            padding: 12px 24px;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+
+        .btn-add:hover {
+            background-color: #218838;
+        }
+
+        .btn-home {
+            background-color: #6c757d;
+            color: white;
+            margin-top: 20px;
+        }
+
+        .btn-home:hover {
+            background-color: #5a6268;
+        }
+
+        .no-data {
+            text-align: center;
+            color: #666;
+            font-style: italic;
+            padding: 40px;
+        }
+
+        .actions-cell {
+            white-space: nowrap;
         }
     </style>
 </head>
 <body>
-<h1>Registro de Clientes</h1>
+<div class="container">
+    <h1>📋 Gestión de Clientes</h1>
 
-<!-- Botón para agregar nuevo cliente -->
-<a href="/clientes/nuevo" class="btn btn-add">Registrar Nuevo Cliente</a>
+    <!-- Mostrar mensajes de éxito o error -->
+    <div th:if="${mensaje}" th:class="'alert alert-' + ${tipo}" th:text="${mensaje}"></div>
 
-<!-- Tabla de clientes -->
-<table>
-    <thead>
-    <tr>
-        <th>ID</th>
-        <th>NOMBRE</th>
-        <th>CORREO</th>
-        <th>TELÉFONO</th>
-        <th>ACCIONES</th>
-    </tr>
-    </thead>
-    <tbody>
-    <!-- CORRECCIÓN: Usar los nombres correctos de las propiedades -->
-    <tr th:each="cliente : ${clientes}">
-        <td th:text="${cliente.id}"></td>
-        <td th:text="${cliente.nombre}"></td>
-        <td th:text="${cliente.correo}"></td>
-        <td th:text="${cliente.telefono}"></td>
-        <td>
-            <a th:href="@{/clientes/editar/{id}(id=${cliente.id})}" class="btn btn-edit">Editar</a>
-            <a th:href="@{/clientes/eliminar/{id}(id=${cliente.id})}"
-               class="btn btn-delete"
-               onclick="return confirm('¿Estás seguro de eliminar este cliente?')">Eliminar</a>
-        </td>
-    </tr>
-    <!-- Mostrar mensaje si no hay clientes -->
-    <tr th:if="${#lists.isEmpty(clientes)}">
-        <td colspan="5" style="text-align: center; color: #666;">
-            No hay clientes registrados
-        </td>
-    </tr>
-    </tbody>
-</table>
+    <!-- Botón para agregar nuevo cliente -->
+    <a href="/clientes/nuevo" class="btn btn-add">➕ Registrar Nuevo Cliente</a>
 
-<a href="">editar/a>
-<a href="/" class="btn" style="background-color: #6c757d; color: white;">Volver al Inicio</a>
+    <!-- Tabla de clientes -->
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>NOMBRE</th>
+            <th>CORREO</th>
+            <th>TELÉFONO</th>
+            <th>ACCIONES</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="cliente : ${clientes}">
+            <td th:text="${cliente.id}"></td>
+            <td th:text="${cliente.nombre}"></td>
+            <td th:text="${cliente.correo}"></td>
+            <td th:text="${cliente.telefono}"></td>
+            <td class="actions-cell">
+                <a th:href="@{/clientes/editar/{id}(id=${cliente.id})}" class="btn btn-edit">✏️ Editar</a>
+                <a th:href="@{/clientes/eliminar/{id}(id=${cliente.id})}"
+                   class="btn btn-delete"
+                   onclick="return confirm('¿Estás seguro de eliminar este cliente?')">🗑️ Eliminar</a>
+            </td>
+        </tr>
+        <!-- Mostrar mensaje si no hay clientes -->
+        <tr th:if="${#lists.isEmpty(clientes)}">
+            <td colspan="5" class="no-data">
+                😔 No hay clientes registrados<br>
+                <small>Haz clic en "Registrar Nuevo Cliente" para comenzar</small>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <a href="/" class="btn btn-home">🏠 Volver al Inicio</a>
+</div>
 </body>
 </html>
